@@ -1,0 +1,8 @@
+/* Aurelle — Webfonts
+   Display: Cormorant Garamond (high-contrast serif, light weight)
+   Body:    Inter (modern sans, screen-legible)
+   Both are open-source faces chosen in the Visual Identity chapter precisely so the
+   identity is freely rebuildable. Served from Google Fonts CDN; consumers inherit them
+   via this import. Canela is the sanctioned paid display upgrade — swap --font-display only. */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500;600&display=swap");

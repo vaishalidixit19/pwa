@@ -1,0 +1,50 @@
+/* Aurelle — Colour tokens
+   Warm-neutral and earthbound. Every value sits between extremes: no pure black,
+   no pure white, no saturation. Backgrounds draw from Ivory / Bone / Linen only.
+   Accents (champagne / bronze / olive) appear on ~10% of a composition at most. */
+
+:root {
+  /* ── Core neutrals (base values) ───────────────────────────── */
+  --ivory:    #F4EFE6; /* Warm Ivory   — primary background            */
+  --bone:     #FAF7F0; /* Bone White   — raised surfaces, cards, paper */
+  --linen:    #EAE3D6; /* Natural Linen— secondary background, bands   */
+  --stone:    #D8CFC0; /* Soft Stone   — borders, dividers, muted fill */
+  --mushroom: #B3A797; /* Mushroom Grey— disabled, tertiary, hairlines */
+  --taupe:    #9B8B77; /* Warm Taupe   — secondary text, captions      */
+  --espresso: #3A322A; /* Soft Espresso— primary text, headings        */
+  --charcoal: #2A2724; /* Charcoal     — maximum contrast, rare        */
+
+  /* ── Accents (rare — emphasis only, never dominant) ────────── */
+  --champagne: #C9B79C; /* Brushed Champagne — primary accent, hairline highlights */
+  --bronze:    #A8835B; /* Soft Bronze       — interactive accent, links on hover  */
+  --olive:     #6F6B52; /* Muted Olive       — deep accent, used sparingly         */
+
+  /* ── Semantic aliases ──────────────────────────────────────── */
+  /* Surfaces */
+  --surface-page:    var(--ivory);
+  --surface-card:    var(--bone);
+  --surface-band:    var(--linen);
+  --surface-sunken:  var(--linen);
+  --surface-inverse: var(--espresso);
+
+  /* Text */
+  --text-primary:    var(--espresso);
+  --text-secondary:  var(--taupe);
+  --text-tertiary:   var(--mushroom);
+  --text-disabled:   var(--mushroom);
+  --text-on-dark:    var(--ivory);
+  --text-accent:     var(--bronze);
+
+  /* Lines & borders */
+  --border-hairline: var(--stone);
+  --border-strong:   var(--espresso);
+
+  /* Interactive */
+  --accent:          var(--champagne);
+  --accent-hover:    var(--bronze);
+  --accent-deep:     var(--olive);
+  --focus-ring:      var(--champagne);
+
+  /* Feedback — calm, never alarm. Errors speak in Bronze, never red. */
+  --message-note:    var(--bronze);
+}

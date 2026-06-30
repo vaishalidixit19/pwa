@@ -1,0 +1,23 @@
+/* Aurelle — Shape, line, elevation & motion tokens
+   Architectural, not rounded. Separation comes from surface colour and space,
+   not shadow. Motion is calm and slow — it should reduce heart rate, never raise it. */
+
+:root {
+  /* Radius — luxury is architectural, not rounded */
+  --radius:    2px;
+  --radius-0:  0;
+  --radius-sm: 2px;
+
+  /* Hairlines */
+  --hairline: 1px solid var(--border-hairline);
+
+  /* Elevation — avoid shadow; use only when a floating element is unavoidable */
+  --shadow-none:  none;
+  --shadow-float: 0 1px 3px rgba(42, 39, 36, 0.06);
+
+  /* Motion */
+  --ease:           cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --duration-hover: 200ms; /* @kind other */
+  --duration-enter: 500ms; /* @kind other */
+  --duration-slow:  600ms; /* @kind other */
+}

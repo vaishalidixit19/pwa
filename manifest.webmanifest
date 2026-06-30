@@ -1,0 +1,17 @@
+{
+  "name": "Aurelle — Luxury Beauty House",
+  "short_name": "Aurelle",
+  "description": "Bridal and occasion beauty in Delhi NCR. The art of becoming.",
+  "start_url": "./Aurelle.dc.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b1815",
+  "theme_color": "#1b1815",
+  "categories": ["beauty", "lifestyle"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

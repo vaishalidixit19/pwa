@@ -1,0 +1,47 @@
+/* Aurelle — Typography tokens
+   Cormorant Garamond carries editorial display at light weight (300–400); it never
+   appears bold — weight comes from size and space. Inter carries body, UI and data.
+   Eyebrows are the only uppercase element, always letter-spaced 0.18em. */
+
+:root {
+  /* Families */
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body:    "Inter", "Helvetica Neue", Arial, sans-serif;
+
+  /* Weights */
+  --weight-light:   300; /* @kind font */
+  --weight-regular: 400; /* @kind font */
+  --weight-medium:  500; /* @kind font */
+  --weight-semibold:600; /* @kind font */
+
+  /* Type scale — size (1rem = 16px) */
+  --fs-display-xl: 4.5rem;   /* 72px — hero statements      */
+  --fs-display-l:  3.25rem;  /* 52px — page titles          */
+  --fs-h1:         2.5rem;   /* 40px — section titles       */
+  --fs-h2:         1.875rem; /* 30px — subsections          */
+  --fs-h3:         1.25rem;  /* 20px — editorial labels     */
+  --fs-body-l:     1.125rem; /* 18px — lead paragraphs      */
+  --fs-body:       1rem;     /* 16px — default copy         */
+  --fs-caption:    0.875rem; /* 14px — captions, support    */
+  --fs-eyebrow:    0.75rem;  /* 12px — section eyebrows     */
+
+  /* Line height */
+  --lh-display-xl: 1.05; /* @kind other */
+  --lh-display-l:  1.1;  /* @kind other */
+  --lh-h1:         1.15; /* @kind other */
+  --lh-h2:         1.2;  /* @kind other */
+  --lh-h3:         1.35; /* @kind other */
+  --lh-body-l:     1.65; /* @kind other */
+  --lh-body:       1.7;  /* @kind other */
+  --lh-caption:    1.5;  /* @kind other */
+  --lh-eyebrow:    1.4;  /* @kind other */
+
+  /* Letter-spacing */
+  --ls-display:    -0.01em; /* @kind other */
+  --ls-h3:          0.01em; /* @kind other */
+  --ls-caption:     0.02em; /* @kind other */
+  --ls-eyebrow:     0.18em; /* @kind other */
+
+  /* Reading measure */
+  --measure-body: 68ch; /* @kind other */
+}

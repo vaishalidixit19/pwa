@@ -1,0 +1,14 @@
+/* ============================================================
+   AURELLE — Global stylesheet entry point
+   Luxury is not designed. It is orchestrated.
+
+   This file is the single stylesheet consumers link. It is an
+   index of @import lines only — never put rules here. Everything
+   it reaches (tokens + @font-face) ships to consumers.
+   ============================================================ */
+
+@import "tokens/fonts.css";
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/shape-motion.css";

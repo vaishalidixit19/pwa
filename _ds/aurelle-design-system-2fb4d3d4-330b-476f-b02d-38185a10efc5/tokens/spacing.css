@@ -1,0 +1,20 @@
+/* Aurelle — Spacing & layout tokens
+   A single 8px base unit governs all spacing. Generous space is the most direct
+   expression of "less, but better." Section rhythm uses --space-7 to --space-8. */
+
+:root {
+  --space-1: 0.5rem;  /*   8px */
+  --space-2: 1rem;    /*  16px */
+  --space-3: 1.5rem;  /*  24px */
+  --space-4: 2rem;    /*  32px */
+  --space-5: 3rem;    /*  48px */
+  --space-6: 4rem;    /*  64px */
+  --space-7: 6rem;    /*  96px */
+  --space-8: 8rem;    /* 128px */
+
+  /* Layout */
+  --maxw:  1200px; /* max content width */
+  --readw: 680px;  /* reading column    */
+  --gutter: var(--space-3);
+  --margin-desktop: var(--space-5);
+}
