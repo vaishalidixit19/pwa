@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/tokens/shape-motion.css">
+  <link rel="stylesheet" href="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/styles.css">
+  <script src="_ds/aurelle-design-system-2fb4d3d4-330b-476f-b02d-38185a10efc5/_ds_bundle.js"></script>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1b1815">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aurelle">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{background:#1b1815;font-family:var(--font-body);color:var(--espresso);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    .stage{min-height:100dvh;display:flex;align-items:center;justify-content:center}
+    .app{position:relative;width:min(100%,390px);height:100dvh;max-height:940px;background:var(--ivory);display:flex;flex-direction:column;overflow:hidden}
+    @media(min-width:478px){.stage{padding:28px}.app{height:calc(100dvh - 56px);border:1px solid var(--stone);box-shadow:0 1px 3px rgba(42,39,36,.18)}}
+    .scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .scroll::-webkit-scrollbar{display:none}
+    .screen{display:none}
+    .s-home{display:block}
+    [data-tab] .s-home{display:none}
+    [data-tab="home"] .s-home,
+    [data-tab="bridal"] .s-bridal,
+    [data-tab="portfolio"] .s-portfolio,
+    [data-tab="studio"] .s-studio,
+    [data-tab="contact"] .s-contact{display:block;animation:fadeRise .5s var(--ease)}
+    .nav-btn{color:var(--mushroom)}
+    [data-tab="home"] .nav-home,
+    [data-tab="bridal"] .nav-bridal,
+    [data-tab="portfolio"] .nav-portfolio,
+    [data-tab="studio"] .nav-studio,
+    [data-tab="contact"] .nav-contact{color:var(--bronze)}
+    .pi{color:var(--mushroom);transition:color .3s var(--ease)}
+    [data-step="1"] .pi-1,[data-step="2"] .pi-2,[data-step="3"] .pi-3{color:var(--espresso)}
+    [data-step="2"] .pi-1,[data-step="3"] .pi-1,[data-step="3"] .pi-2{color:var(--bronze)}
+    .hscroll{scrollbar-width:none}
+    .hscroll::-webkit-scrollbar{display:none}
+    @keyframes fadeRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes lbIn{from{opacity:0}to{opacity:1}}
+
+    /* ── Cinematic journey ─────────────────────────────────── */
+    .vfill{height:84vh;min-height:560px;max-height:860px}
+    .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.5;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 1.1s steps(3) infinite}
+    @keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-4%,2%)}66%{transform:translate(3%,-3%)}100%{transform:translate(0,0)}}
+    @keyframes kenburns{from{transform:scale(1.02)}to{transform:scale(1.13)}}
+    .kb{animation:kenburns 22s var(--ease) infinite alternate}
+    @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+    .cue{animation:floatY 2.4s var(--ease) infinite}
+    @keyframes drawLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes shimmer{0%{opacity:.35}50%{opacity:1}100%{opacity:.35}}
+
+    /* reveal on scroll */
+    .reveal{will-change:transform}
+    .reveal-img{will-change:transform}
+
+    /* journey rail */
+    .rail{position:absolute;left:13px;top:74px;bottom:78px;width:2px;background:rgba(168,131,91,.18);border-radius:2px;pointer-events:none;z-index:14;opacity:0;transition:opacity .5s var(--ease)}
+    [data-tab="home"] .rail{opacity:1}
+    .rail-fill{position:absolute;inset:0;background:linear-gradient(180deg,var(--champagne),var(--bronze));transform:scaleY(0);transform-origin:top;border-radius:2px}
+
+    /* install bar */
+    .install{position:absolute;left:14px;right:14px;bottom:84px;z-index:30;background:var(--espresso);color:var(--ivory);border-radius:3px;padding:13px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(20,18,16,.4);animation:fadeRise .5s var(--ease)}
+
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.cine-on .reveal{opacity:1;transform:none}.cine-on .reveal-img{clip-path:none}}
+  </style>
+  <script>
+  (function(){
+    function start(){
+      var sc=document.querySelector('.scroll');
+      if(!sc){return setTimeout(start,120);}
+      document.documentElement.classList.add('cine-on');
+      function fit(){var h=sc.clientHeight;sc.querySelectorAll('.vfill').forEach(function(v){v.style.height=h+'px';});}
+      var raf;
+      function frame(){
+        raf=null;
+        var vh=sc.clientHeight,top=sc.scrollTop,scTop=sc.getBoundingClientRect().top;
+        sc.querySelectorAll('.reveal:not(.in),.reveal-img:not(.in)').forEach(function(el){var r=el.getBoundingClientRect();if(r.top-scTop < vh*0.88 && r.bottom-scTop > 0)el.classList.add('in');});
+        sc.querySelectorAll('[data-px]').forEach(function(el){var r=el.getBoundingClientRect();var c=(r.top-scTop)+r.height/2-vh/2;var sp=parseFloat(el.getAttribute('data-px'))||0.1;el.style.transform='translate3d(0,'+(c*-sp).toFixed(1)+'px,0)';});
+        var hero=sc.querySelector('[data-hero]');if(hero){var k=Math.min(1,top/(vh*0.9));hero.style.opacity=(1-0.5*k).toFixed(3);}
+        var f=document.querySelector('[data-rail-fill]');if(f){var mx=sc.scrollHeight-vh;var p=mx>0?Math.min(1,Math.max(0,top/mx)):0;f.style.transform='scaleY('+p.toFixed(3)+')';}
+      }
+      function onScroll(){if(raf)return;raf=requestAnimationFrame(frame);}
+      fit();onScroll();
+      sc.addEventListener('scroll',onScroll,{passive:true});
+      window.addEventListener('resize',function(){fit();onScroll();});
+      var t;var mo=new MutationObserver(function(){clearTimeout(t);t=setTimeout(function(){fit();onScroll();},60);});
+      mo.observe(sc,{childList:true,subtree:true});
+    }
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  })();
+  </script>
+</helmet>
+
+<div class="stage">
+  <div class="app" data-tab="{{ tab }}">
+    <div style="flex:none;position:relative;z-index:20;display:flex;justify-content:center;align-items:center;height:60px;background:rgba(250,247,240,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--stone)">
+      <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Wordmark" color="var(--espresso)" size="17" signature="{{ yes }}" hint-size="auto,40px"></x-import>
+    </div>
+    <div class="scroll" ref="{{ scrollRef }}">
+
+      <!-- ============================== HOME ============================== -->
+      <section class="screen s-home" data-screen-label="Home">
+        <!-- ===== HERO ===== -->
+        <div class="vfill" data-hero="" style="position:relative;overflow:hidden;background:#1a1714">
+          <div class="kb" style="position:absolute;inset:0">
+            <img src="assets/photo/bride-01.jpg" alt="Aurelle bride" style="width:100%;height:100%;object-fit:cover;object-position:60% 28%">
+          </div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.34) 0%,rgba(20,18,16,0) 28%,rgba(20,18,16,.12) 50%,rgba(20,18,16,.58) 72%,rgba(20,18,16,.94) 100%)"></div>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:24px 26px 30px">
+            <div>
+              
+              <h1 style="font-family:var(--font-display);font-weight:300;font-size:58px;line-height:0.94;letter-spacing:-0.02em;color:var(--ivory);margin:0">
+                <span class="reveal" style="display:block;transition-delay:.04s">How do you</span>
+                <span class="reveal" style="display:block;transition-delay:.14s">want to</span>
+                <span class="reveal" style="display:block;font-style:italic;color:var(--champagne);transition-delay:.24s">feel?</span>
+              </h1>
+              <div class="reveal" style="transition-delay:.34s">
+                <div style="height:1px;background:rgba(201,183,156,.55);margin:22px 0 16px"></div>
+                <p style="font-family:var(--font-body);font-size:14px;line-height:1.62;color:rgba(244,239,230,.84);margin:0 0 22px;max-width:30ch">Not “what look do you want.” Every Aurelle journey begins with the only question that matters.</p>
+                <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ goBook }}" dc-props="{{ heroBtn }}" hint-size="100%,46px">Begin your journey</x-import>
+              </div>
+              <div class="cue" style="display:flex;align-items:center;gap:9px;margin-top:24px;font-family:var(--font-body);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,239,230,.58)">
+                <span>Scroll to begin</span>
+                <svg width="11" height="20" viewBox="0 0 11 20" fill="none" stroke="rgba(244,239,230,.58)" stroke-width="1.2"><path d="M5.5 1v15"></path><path d="M1.5 12l4 4 4-4"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CHAPTER 01 · The consultation ===== -->
+        <div class="vfill" style="position:relative;overflow:hidden;background:#1a1714">
+          <div data-px="0.12" style="position:absolute;inset:-11% 0;will-change:transform">
+            <img src="assets/photo/process-2.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 28%">
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.42) 0%,rgba(20,18,16,0) 32%,rgba(20,18,16,.12) 56%,rgba(20,18,16,.86) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 46px">
+            <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <span style="font-family:var(--font-body);font-size:11px;letter-spacing:.28em;color:var(--champagne)">01</span>
+              <span style="width:32px;height:1px;background:rgba(201,183,156,.55)"></span>
+              <span style="font-family:var(--font-body);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,230,.7)">Being understood</span>
+            </div>
+            <h2 class="reveal" style="font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.1;letter-spacing:-0.01em;color:var(--ivory);margin:0;max-width:15ch;transition-delay:.08s">We learn your face before we ever touch it.</h2>
+            <p class="reveal" style="font-family:var(--font-body);font-size:14px;line-height:1.64;color:rgba(244,239,230,.82);margin:16px 0 0;max-width:32ch;transition-delay:.16s">A quiet consultation — your features, your heirlooms, your light. By the end, the look already feels like a decision you made together.</p>
+          </div>
+        </div>
+
+        <!-- ===== CHAPTER 03 · The trial ===== -->
+        <div class="vfill" style="position:relative;overflow:hidden;background:#1a1714">
+          <div data-px="0.10" style="position:absolute;inset:-11% 0;will-change:transform">
+            <img src="assets/photo/process-3.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 28%">
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.3) 0%,rgba(20,18,16,0) 30%,rgba(20,18,16,.1) 54%,rgba(20,18,16,.84) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 46px">
+            <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <span style="font-family:var(--font-body);font-size:11px;letter-spacing:.28em;color:var(--champagne)">02</span>
+              <span style="width:32px;height:1px;background:rgba(201,183,156,.55)"></span>
+              <span style="font-family:var(--font-body);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,230,.7)">The trial</span>
+            </div>
+            <h2 class="reveal" style="font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.1;letter-spacing:-0.01em;color:var(--ivory);margin:0;max-width:15ch;transition-delay:.08s">The mirror moment, rehearsed.</h2>
+            <p class="reveal" style="font-family:var(--font-body);font-size:14px;line-height:1.64;color:rgba(244,239,230,.82);margin:16px 0 0;max-width:32ch;transition-delay:.16s">We trial the full look in advance, so nothing about the morning is a surprise. You walk into your wedding day already knowing how it ends.</p>
+          </div>
+        </div>
+
+        <!-- ===== CHAPTER 04 · The golden morning ===== -->
+        <div class="vfill" style="position:relative;overflow:hidden;background:#1a1714">
+          <div data-px="0.13" style="position:absolute;inset:-11% 0;will-change:transform">
+            <img src="assets/photo/process-4.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 32%">
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.28) 0%,rgba(20,18,16,0) 30%,rgba(20,18,16,.1) 54%,rgba(20,18,16,.84) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 46px">
+            <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <span style="font-family:var(--font-body);font-size:11px;letter-spacing:.28em;color:var(--champagne)">03</span>
+              <span style="width:32px;height:1px;background:rgba(201,183,156,.55)"></span>
+              <span style="font-family:var(--font-body);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,230,.7)">The morning</span>
+            </div>
+            <h2 class="reveal" style="font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.1;letter-spacing:-0.01em;color:var(--ivory);margin:0;max-width:15ch;transition-delay:.08s">Golden, unhurried, entirely yours.</h2>
+            <p class="reveal" style="font-family:var(--font-body);font-size:14px;line-height:1.64;color:rgba(244,239,230,.82);margin:16px 0 0;max-width:32ch;transition-delay:.16s">Haldi light, family close, no rush in the room. We hold the calm so you can simply be present in it.</p>
+          </div>
+        </div>
+
+        <!-- ===== CHAPTER 05 · The transformation ===== -->
+        <div class="vfill" style="position:relative;overflow:hidden;background:#1a1714">
+          <div data-px="0.12" style="position:absolute;inset:-11% 0;will-change:transform">
+            <img src="assets/photo/process-5.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:55% 30%">
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.44) 0%,rgba(20,18,16,0) 32%,rgba(20,18,16,.12) 56%,rgba(20,18,16,.86) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 46px">
+            <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+              <span style="font-family:var(--font-body);font-size:11px;letter-spacing:.28em;color:var(--champagne)">04</span>
+              <span style="width:32px;height:1px;background:rgba(201,183,156,.55)"></span>
+              <span style="font-family:var(--font-body);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,230,.7)">The transformation</span>
+            </div>
+            <h2 class="reveal" style="font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.1;letter-spacing:-0.01em;color:var(--ivory);margin:0;max-width:15ch;transition-delay:.08s">Presence, gently applied.</h2>
+            <p class="reveal" style="font-family:var(--font-body);font-size:14px;line-height:1.64;color:rgba(244,239,230,.82);margin:16px 0 0;max-width:32ch;transition-delay:.16s">Layer by quiet layer. Nothing added that isn't already you — only turned up to meet the day.</p>
+          </div>
+        </div>
+
+        <!-- ===== CHAPTER 06 · The recognition (peak) ===== -->
+        <div class="vfill" style="position:relative;overflow:hidden;background:#1a1714">
+          <div data-px="0.14" style="position:absolute;inset:-11% 0;will-change:transform">
+            <img src="assets/photo/process-6.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 34%">
+          </div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.5) 0%,rgba(20,18,16,.06) 30%,rgba(20,18,16,.2) 56%,rgba(20,18,16,.9) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 48px">
+            <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+              <span style="font-family:var(--font-body);font-size:11px;letter-spacing:.28em;color:var(--champagne)">05</span>
+              <span style="width:32px;height:1px;background:rgba(201,183,156,.55)"></span>
+              <span style="font-family:var(--font-body);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,230,.7)">The recognition</span>
+            </div>
+            <h2 class="reveal" style="font-family:var(--font-display);font-weight:300;font-size:46px;line-height:1.0;letter-spacing:-0.02em;color:var(--ivory);margin:0">And there<br><span style="font-style:italic;color:var(--champagne)">you</span> are.</h2>
+            <p class="reveal" style="font-family:var(--font-body);font-style:italic;font-size:16px;line-height:1.5;color:rgba(244,239,230,.86);margin:18px 0 6px;max-width:30ch;transition-delay:.1s">“My mother said she recognised me. That was the whole point.”</p>
+            <div class="reveal" style="font-family:var(--font-body);font-size:11px;letter-spacing:.06em;color:var(--champagne);transition-delay:.16s">Sneha · Bridal, Noida</div>
+          </div>
+        </div>
+
+        <!-- ===== liquid transition ===== -->
+        <div style="position:relative;height:52px;background:#141210;margin-top:-1px;line-height:0">
+          <svg viewBox="0 0 430 52" preserveAspectRatio="none" style="position:absolute;left:0;bottom:-1px;width:100%;height:52px">
+            <defs>
+              <filter id="liqA" x="-20%" y="-50%" width="140%" height="200%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.014 0.022" numOctaves="2" seed="7" result="n">
+                  <animate attributeName="baseFrequency" dur="17s" values="0.014 0.022;0.021 0.013;0.014 0.022" repeatCount="indefinite"></animate>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="18"></feDisplacementMap>
+              </filter>
+            </defs>
+            <path d="M0,28 C80,8 150,40 220,27 C300,12 360,40 430,24 L430,52 L0,52 Z" fill="var(--linen)" filter="url(#liqA)"></path>
+          </svg>
+        </div>
+
+        <!-- ===== 02 THE HOUSE ===== -->
+        <div style="padding:46px 26px 50px;background:var(--linen)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">The house</x-import>
+          </div>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:29px;line-height:1.18;color:var(--espresso);margin:0 0 16px;max-width:18ch">A luxury beauty house, not a studio.</h2>
+          <p style="font-size:15px;line-height:1.74;color:var(--espresso);margin:0 0 26px;max-width:42ch">Confidence through timeless beauty — quietly held, never performed. Five principles sit beneath every choice we make.</p>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ principles }}" as="pr" hint-placeholder-count="5">
+              <div style="display:flex;align-items:baseline;gap:14px;padding:13px 0;border-top:1px solid var(--stone)">
+                <span style="font-family:var(--font-display);font-size:14px;color:var(--bronze);width:22px">{{ pr.num }}</span>
+                <span style="font-family:var(--font-display);font-weight:400;font-size:20px;color:var(--espresso)">{{ pr.name }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ===== 03 BRIDAL EXPERIENCES ===== -->
+        <div style="padding:50px 26px 50px;background:var(--ivory)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Bridal experiences</x-import>
+          </div>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:29px;line-height:1.18;color:var(--espresso);margin:0 0 26px;max-width:18ch">Considered for the day, and the days around it.</h2>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <sc-for list="{{ strip2 }}" as="e" hint-placeholder-count="2">
+              <div onClick="{{ e.open }}" style="display:flex;gap:16px;align-items:stretch;background:var(--bone);border:1px solid var(--stone);border-radius:2px;overflow:hidden;cursor:pointer">
+                <sc-if value="{{ e.img }}" hint-placeholder-val="{{ false }}"><img src="{{ e.img }}" alt="" style="width:96px;height:118px;object-fit:cover;object-position:50% 30%;flex:none;background:#1a1714"></sc-if>
+                <div style="display:flex;flex-direction:column;justify-content:center;gap:6px;padding:14px 14px 14px 0">
+                  <span style="font-family:var(--font-display);font-weight:400;font-size:21px;line-height:1.15;color:var(--espresso)">{{ e.name }}</span>
+                  <span style="font-size:13px;color:var(--taupe);line-height:1.5">{{ e.note }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:26px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="secondary" onClick="{{ goBridal }}" dc-props="{{ wide }}" hint-size="100%,46px">View all experiences</x-import>
+          </div>
+        </div>
+
+        <!-- ===== 04 OCCASION BEAUTY ===== -->
+        <div style="padding:50px 26px 52px;background:var(--bone)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Occasion beauty</x-import>
+          </div>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:29px;line-height:1.18;color:var(--espresso);margin:0 0 12px;max-width:16ch">For the days around the day.</h2>
+          <p style="font-size:15px;line-height:1.74;color:var(--taupe);margin:0 0 26px;max-width:40ch">Mehndi, haldi, sangeet, reception — each occasion carries its own light, and its own way of feeling like yourself.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <sc-for list="{{ occasionTypes }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.open }}" style="cursor:pointer">
+                <sc-if value="{{ o.img }}" hint-placeholder-val="{{ false }}"><img src="{{ o.img }}" alt="" style="width:100%;height:178px;object-fit:cover;object-position:50% 30%;display:block;background:#1a1714"></sc-if>
+                <div style="font-family:var(--font-display);font-weight:400;font-size:19px;color:var(--espresso);margin:12px 0 2px">{{ o.name }}</div>
+                <div style="font-size:12.5px;line-height:1.5;color:var(--taupe)">{{ o.note }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ===== 05 PORTFOLIO ===== -->
+        <div style="padding:50px 0 48px;background:var(--ivory)">
+          <div style="padding:0 26px">
+            <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px">
+              <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Portfolio</x-import>
+            </div>
+            <h2 style="font-family:var(--font-display);font-weight:300;font-size:29px;line-height:1.18;color:var(--espresso);margin:0 0 24px">A record of presence.</h2>
+          </div>
+          <div class="hscroll" style="display:flex;gap:12px;overflow-x:auto;padding:0 26px 8px;scroll-snap-type:x mandatory">
+            <sc-for list="{{ strip }}" as="p" hint-placeholder-count="5">
+              <sc-if value="{{ p.src }}" hint-placeholder-val="{{ false }}"><img src="{{ p.src }}" alt="" onClick="{{ p.open }}" style="width:176px;height:240px;object-fit:cover;flex:none;background:#1a1714;scroll-snap-align:start;cursor:pointer"></sc-if>
+            </sc-for>
+          </div>
+          <div style="padding:26px 26px 0">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.TextLink" withArrow="{{ yes }}" href="#" onClick="{{ goPortfolio }}" hint-size="auto,22px">View the portfolio</x-import>
+          </div>
+        </div>
+
+        <!-- ===== 06 MEET MANSI ===== -->
+        <div style="padding:50px 26px 52px;background:var(--linen)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Meet Mansi</x-import>
+          </div>
+          <div style="position:relative">
+            <img src="assets/photo/occasion-blue-02.jpg" alt="Mansi, founder of Aurelle" style="width:100%;height:380px;object-fit:cover;object-position:50% 22%;display:block;background:#1a1714">
+            <div style="position:absolute;left:0;bottom:0;padding:14px 16px;background:linear-gradient(180deg,rgba(20,18,16,0),rgba(20,18,16,.6));font-family:var(--font-body);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory)">Mansi · Founder</div>
+          </div>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:27px;line-height:1.2;color:var(--espresso);margin:26px 0 0;max-width:18ch">The house began with a question, not a kit.</h2>
+          <p style="font-size:15px;line-height:1.74;color:var(--espresso);margin:16px 0 0;max-width:42ch">Mansi founded Aurelle on one conviction: that the right preparation should make you feel more like yourself, not less. Every decision here is tested against a thirty-year horizon.</p>
+          <div style="margin-top:24px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.TextLink" withArrow="{{ yes }}" href="#" onClick="{{ goStudio }}" hint-size="auto,22px">Read her story</x-import>
+          </div>
+        </div>
+
+        <!-- ===== 07 TESTIMONIALS ===== -->
+        <div style="padding:56px 30px 52px;background:var(--espresso)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:26px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" color="var(--champagne)" hint-size="auto,16px">In their words</x-import>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ testimonials }}" as="t" hint-placeholder-count="3">
+              <div style="padding:22px 0;border-top:1px solid rgba(244,239,230,.16)">
+                <p style="font-family:var(--font-display);font-weight:300;font-size:23px;line-height:1.34;color:var(--ivory);margin:0 0 14px">“{{ t.quote }}”</p>
+                <div style="font-size:12px;letter-spacing:.06em;color:var(--champagne)">{{ t.who }} · {{ t.ctx }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ===== 08 FAQ ===== -->
+        <div style="padding:50px 26px 48px;background:var(--ivory)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Before you ask</x-import>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="3">
+              <div style="padding:20px 0;border-top:1px solid var(--stone)">
+                <div style="font-family:var(--font-display);font-weight:400;font-size:20px;line-height:1.3;color:var(--espresso);margin-bottom:10px">{{ f.q }}</div>
+                <p style="font-size:14px;line-height:1.7;color:var(--taupe);margin:0;max-width:42ch">{{ f.a }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ===== 09 CLOSING CTA ===== -->
+        <div style="padding:56px 26px 60px;background:var(--bone)">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">Begin</x-import>
+          </div>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:32px;line-height:1.16;color:var(--espresso);margin:0 0 18px;max-width:15ch">Tell us how you would like to feel.</h2>
+          <p style="font-size:15px;line-height:1.72;color:var(--taupe);margin:0 0 24px;max-width:36ch">Booking takes no more than three steps. We read every enquiry personally.</p>
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ goBook }}" dc-props="{{ wide }}" hint-size="100%,46px">Book a consultation</x-import>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div style="padding:48px 26px 40px;background:var(--charcoal)">
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Wordmark" color="var(--ivory)" size="20" signature="{{ yes }}" hint-size="auto,52px"></x-import>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;margin:30px 0 30px">
+            <a href="#" onClick="{{ goHome }}" style="font-family:var(--font-body);font-size:13px;color:rgba(244,239,230,.78);text-decoration:none" style-hover="color:var(--champagne)">Home</a>
+            <a href="#" onClick="{{ goBridal }}" style="font-family:var(--font-body);font-size:13px;color:rgba(244,239,230,.78);text-decoration:none" style-hover="color:var(--champagne)">Bridal experiences</a>
+            <a href="#" onClick="{{ goPortfolio }}" style="font-family:var(--font-body);font-size:13px;color:rgba(244,239,230,.78);text-decoration:none" style-hover="color:var(--champagne)">Portfolio</a>
+            <a href="#" onClick="{{ goStudio }}" style="font-family:var(--font-body);font-size:13px;color:rgba(244,239,230,.78);text-decoration:none" style-hover="color:var(--champagne)">Meet Mansi</a>
+            <a href="#" onClick="{{ goContact }}" style="font-family:var(--font-body);font-size:13px;color:rgba(244,239,230,.78);text-decoration:none" style-hover="color:var(--champagne)">Contact</a>
+          </div>
+          <div style="height:1px;background:rgba(244,239,230,.16);margin-bottom:22px"></div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-family:var(--font-body);font-size:12.5px;color:rgba(244,239,230,.6);line-height:1.6">
+            <span>By appointment · Delhi NCR</span>
+            <span><a href="mailto:studio@aurelle.in" style="color:rgba(244,239,230,.6);text-decoration:none" style-hover="color:var(--champagne)">studio@aurelle.in</a> · <a href="tel:+919810000000" style="color:rgba(244,239,230,.6);text-decoration:none" style-hover="color:var(--champagne)">+91 98100 00000</a></span>
+            <span><a href="https://instagram.com/aurelle" target="_blank" rel="noopener" style="color:rgba(244,239,230,.6);text-decoration:none" style-hover="color:var(--champagne)">Instagram — @aurelle</a></span>
+            <span>Tuesday to Sunday · 10 to 7</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:28px;font-family:var(--font-body);font-size:10.5px;letter-spacing:.08em;color:rgba(244,239,230,.42)">
+            <span>© Aurelle</span>
+            <span style="letter-spacing:.18em;text-transform:uppercase">Quiet confidence</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== BRIDAL ============================== -->
+      <section class="screen s-bridal" data-screen-label="Bridal Experiences">
+        <div class="reveal-img" style="position:relative;height:360px;overflow:hidden;background:#1a1714">
+          <div data-px="0.08" style="position:absolute;inset:-11% 0;will-change:transform"><img src="assets/photo/process-4.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 32%"></div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.3) 0%,rgba(20,18,16,0) 42%,rgba(20,18,16,.88) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 28px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" color="var(--champagne)" hint-size="auto,16px">Bridal experiences</x-import>
+            <h1 style="font-family:var(--font-display);font-weight:300;font-size:38px;line-height:1.06;letter-spacing:-0.015em;color:var(--ivory);margin:14px 0 0;max-width:14ch">Every experience, individually named.</h1>
+            <p style="font-size:14px;line-height:1.65;color:rgba(244,239,230,.82);margin:14px 0 0;max-width:36ch">We do not offer tiers. We offer relationships — each shaped around how you would like the day to feel.</p>
+          </div>
+        </div>
+
+        <!-- consultation rephrase -->
+        <div style="padding:30px 26px;background:var(--linen)">
+          <div style="border-left:1px solid var(--bronze);padding-left:18px">
+            <p style="font-family:var(--font-display);font-weight:300;font-size:22px;line-height:1.35;color:var(--espresso);margin:0">Instead of “what look do you want?”, we ask: how would you like to feel on your wedding day?</p>
+          </div>
+        </div>
+
+        <!-- experiences list -->
+        <div style="padding:34px 26px 16px;background:var(--ivory);display:flex;flex-direction:column;gap:26px">
+          <sc-for list="{{ experiences }}" as="exp" hint-placeholder-count="4">
+            <div style="background:var(--bone);border:1px solid var(--stone);border-radius:2px;overflow:hidden">
+              <sc-if value="{{ exp.img }}" hint-placeholder-val="{{ false }}"><img src="{{ exp.img }}" alt="" style="width:100%;height:210px;object-fit:cover;object-position:50% 35%;background:#1a1714;display:block"></sc-if>
+              <div style="padding:24px 22px 26px">
+                <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">{{ exp.cat }}</x-import>
+                <h3 style="font-family:var(--font-display);font-weight:400;font-size:24px;line-height:1.2;color:var(--espresso);margin:12px 0 4px">{{ exp.name }}</h3>
+                <div style="font-size:13px;color:var(--taupe);margin-bottom:14px">{{ exp.note }}</div>
+                <p style="font-size:14.5px;line-height:1.7;color:var(--espresso);margin:0 0 18px">{{ exp.body }}</p>
+                <div style="height:1px;background:var(--stone);margin:0 0 16px"></div>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+                  <sc-for list="{{ exp.includes }}" as="inc" hint-placeholder-count="3">
+                    <div style="display:flex;gap:10px;font-size:14px;line-height:1.5;color:var(--espresso)"><span style="color:var(--bronze)">·</span><span>{{ inc }}</span></div>
+                  </sc-for>
+                </div>
+                <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.TextLink" withArrow="{{ yes }}" href="#" onClick="{{ goBook }}" hint-size="auto,22px">Begin your enquiry</x-import>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding:30px 26px 56px;background:var(--ivory)">
+          <p style="font-size:14px;line-height:1.7;color:var(--taupe);margin:0 0 22px;max-width:38ch">If none of these is quite right, write to us anyway. We will compose something around your days.</p>
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ goBook }}" dc-props="{{ wide }}" hint-size="100%,46px">Book a consultation</x-import>
+        </div>
+      </section>
+
+      <!-- ============================== PORTFOLIO ============================== -->
+      <section class="screen s-portfolio" data-screen-label="Portfolio">
+        <div class="reveal-img" style="position:relative;height:360px;overflow:hidden;background:#1a1714">
+          <div data-px="0.08" style="position:absolute;inset:-11% 0;will-change:transform"><img src="assets/photo/process-6.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 32%"></div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.3) 0%,rgba(20,18,16,0) 42%,rgba(20,18,16,.88) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 28px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" color="var(--champagne)" hint-size="auto,16px">Portfolio</x-import>
+            <h1 style="font-family:var(--font-display);font-weight:300;font-size:38px;line-height:1.06;letter-spacing:-0.015em;color:var(--ivory);margin:14px 0 0">A record of presence.</h1>
+            <p style="font-size:14px;line-height:1.6;color:rgba(244,239,230,.78);margin:14px 0 0;max-width:36ch">A quiet archive of brides, mornings and the moments between.</p>
+          </div>
+        </div>
+
+        <!-- filters -->
+        <div class="hscroll" style="display:flex;gap:10px;overflow-x:auto;padding:6px 26px 20px;background:var(--ivory)">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+            <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+
+        <!-- grid -->
+        <div style="padding:0 18px 40px;background:var(--ivory);display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ portfolio }}" as="p" hint-placeholder-count="8">
+            <div onClick="{{ p.open }}" style="position:relative;cursor:pointer;background:#1a1714;overflow:hidden">
+              <sc-if value="{{ p.src }}" hint-placeholder-val="{{ false }}"><img src="{{ p.src }}" alt="" style="width:100%;height:240px;object-fit:cover;display:block"></sc-if>
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 12px 10px;background:linear-gradient(180deg,rgba(20,18,16,0),rgba(20,18,16,.72));font-size:11px;letter-spacing:.04em;color:var(--ivory)">{{ p.cap }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:8px 26px 56px;background:var(--ivory)">
+          <p style="font-family:var(--font-display);font-weight:300;font-size:22px;line-height:1.35;color:var(--espresso);margin:0 0 20px;max-width:22ch">Your portrait belongs in this archive.</p>
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ goBook }}" dc-props="{{ wide }}" hint-size="100%,46px">Book a consultation</x-import>
+        </div>
+      </section>
+
+      <!-- ============================== STUDIO ============================== -->
+      <section class="screen s-studio" data-screen-label="Studio">
+        <div class="reveal-img" style="position:relative;height:430px;overflow:hidden;background:#1a1714">
+          <div data-px="0.08" style="position:absolute;inset:-11% 0;will-change:transform"><img src="assets/photo/occasion-blue-04.jpg" alt="Mansi, founder of Aurelle" style="width:100%;height:100%;object-fit:cover;object-position:50% 18%"></div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.32) 0%,rgba(20,18,16,0) 38%,rgba(20,18,16,.9) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 28px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" color="var(--champagne)" hint-size="auto,16px">Meet Mansi</x-import>
+            <h1 style="font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.08;letter-spacing:-0.015em;color:var(--ivory);margin:14px 0 8px;max-width:16ch">The house began with a question, not a kit.</h1>
+            <span style="font-family:var(--font-body);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--champagne)">Mansi · Founder</span>
+          </div>
+        </div>
+        <div style="padding:34px 26px 0;background:var(--ivory)">
+          <p style="font-size:15.5px;line-height:1.75;color:var(--espresso);margin:22px 0 0;max-width:40ch">Mansi founded Aurelle in Delhi NCR with one conviction: that the right preparation should make a person feel more like themselves, not less. The question is never what you want to look like. It is how you want to feel.</p>
+          <p style="font-size:15.5px;line-height:1.75;color:var(--espresso);margin:16px 0 22px;max-width:40ch">Every decision here is tested against a thirty-year horizon. If it will not feel timeless in photographs your children keep, it does not belong on the day.</p>
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Wordmark" signature="{{ yes }}" size="20" hint-size="auto,52px"></x-import>
+        </div>
+
+        <!-- the house -->
+        <div style="padding:46px 26px;background:var(--linen)">
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">The house</x-import>
+          <h2 style="font-family:var(--font-display);font-weight:300;font-size:28px;line-height:1.2;color:var(--espresso);margin:16px 0 16px;max-width:18ch">A luxury beauty house, not a studio.</h2>
+          <p style="font-size:15px;line-height:1.7;color:var(--espresso);margin:0 0 26px;max-width:40ch">Confidence through timeless beauty — quietly held, never performed. These five principles sit beneath every choice we make.</p>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ principles }}" as="pr" hint-placeholder-count="5">
+              <div style="display:flex;align-items:baseline;gap:14px;padding:14px 0;border-top:1px solid var(--stone)">
+                <span style="font-family:var(--font-display);font-size:15px;color:var(--bronze);width:22px">{{ pr.num }}</span>
+                <span style="font-family:var(--font-display);font-weight:400;font-size:20px;color:var(--espresso)">{{ pr.name }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- testimonials -->
+        <div style="padding:46px 26px 40px;background:var(--ivory)">
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" hint-size="auto,16px">In their words</x-import>
+          <div style="display:flex;flex-direction:column;gap:22px;margin-top:24px">
+            <sc-for list="{{ testimonials }}" as="t" hint-placeholder-count="3">
+              <div style="background:var(--bone);border:1px solid var(--stone);border-radius:2px;padding:26px 22px">
+                <p style="font-family:var(--font-display);font-weight:300;font-size:21px;line-height:1.4;color:var(--espresso);margin:0 0 16px">“{{ t.quote }}”</p>
+                <div style="font-size:12.5px;letter-spacing:.04em;color:var(--taupe)">{{ t.who }} · {{ t.ctx }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:44px 26px 56px;background:var(--bone)">
+          <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ goBook }}" dc-props="{{ wide }}" hint-size="100%,46px">Book a consultation</x-import>
+        </div>
+      </section>
+
+      <!-- ============================== CONTACT ============================== -->
+      <section class="screen s-contact" data-screen-label="Contact">
+        <div class="reveal-img" style="position:relative;height:340px;overflow:hidden;background:#1a1714">
+          <div data-px="0.08" style="position:absolute;inset:-11% 0;will-change:transform"><img src="assets/photo/process-1.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:64% 30%"></div>
+          <div class="grain"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.32) 0%,rgba(20,18,16,0) 40%,rgba(20,18,16,.9) 100%)"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:0 26px 28px">
+            <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Eyebrow" color="var(--champagne)" hint-size="auto,16px">Contact</x-import>
+            <h1 style="font-family:var(--font-display);font-weight:300;font-size:38px;line-height:1.06;letter-spacing:-0.015em;color:var(--ivory);margin:14px 0 0">Begin your enquiry.</h1>
+            <p style="font-size:14px;line-height:1.6;color:rgba(244,239,230,.82);margin:14px 0 0;max-width:34ch">Three quiet steps. We write back within two days.</p>
+          </div>
+        </div>
+
+        <!-- booking card -->
+        <div style="padding:6px 26px 0;background:var(--ivory)">
+          <div data-step="{{ step }}" style="background:var(--bone);border:1px solid var(--stone);border-radius:2px;padding:24px 20px 26px">
+
+            <sc-if value="{{ notBooked }}" hint-placeholder-val="{{ true }}">
+              <!-- progress -->
+              <div style="display:flex;margin-bottom:24px">
+                <div class="pi pi-1" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span style="font-family:var(--font-display);font-size:18px">01</span>
+                  <span style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase">Occasion</span>
+                </div>
+                <div class="pi pi-2" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span style="font-family:var(--font-display);font-size:18px">02</span>
+                  <span style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase">About you</span>
+                </div>
+                <div class="pi pi-3" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+                  <span style="font-family:var(--font-display);font-size:18px">03</span>
+                  <span style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase">Confirm</span>
+                </div>
+              </div>
+              <div style="height:1px;background:var(--stone);margin:0 0 24px"></div>
+
+              <!-- step 1 -->
+              <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:18px">
+                  <h3 style="font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--espresso);margin:0">The occasion</h3>
+                  <div>
+                    <div style="font-family:var(--font-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--taupe);margin-bottom:13px">What are we preparing for?<span style="color:var(--mushroom);text-transform:none;letter-spacing:0"> — select all that apply</span></div>
+                    <div style="display:flex;flex-direction:column;gap:13px">
+                      <sc-for list="{{ occasionChoices }}" as="oc" hint-placeholder-count="5">
+                        <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Checkbox" label="{{ oc.label }}" checked="{{ oc.checked }}" onChange="{{ oc.toggle }}" hint-size="auto,22px"></x-import>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Input" label="Approximate date" type="date" value="{{ date }}" onChange="{{ onDate }}" style="width:100%" hint-size="100%,72px"></x-import>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Select" label="City" placeholder="Select a city" options="{{ cities }}" value="{{ city }}" onChange="{{ onCity }}" style="width:100%" hint-size="100%,72px"></x-import>
+                  <div style="margin-top:6px">
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ next }}" disabled="{{ s1invalid }}" dc-props="{{ wide }}" hint-size="100%,46px">Continue</x-import>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- step 2 -->
+              <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:18px">
+                  <h3 style="font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--espresso);margin:0">About you</h3>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Input" label="Your name" placeholder="How may we address you?" value="{{ name }}" onChange="{{ onName }}" style="width:100%" hint-size="100%,72px"></x-import>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Input" label="Email" type="email" placeholder="So we can write back" value="{{ email }}" onChange="{{ onEmail }}" style="width:100%" hint-size="100%,72px"></x-import>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Input" label="Phone" type="tel" placeholder="A number we can reach you on" value="{{ phone }}" onChange="{{ onPhone }}" style="width:100%" hint-size="100%,72px"></x-import>
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Textarea" label="How would you like to feel on the day?" placeholder="A few words is plenty." value="{{ feeling }}" onChange="{{ onFeeling }}" rows="3" style="width:100%" hint-size="100%,120px"></x-import>
+                  <div style="display:flex;gap:12px;margin-top:6px">
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="ghost" onClick="{{ back }}" hint-size="auto,46px">Back</x-import>
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ next }}" disabled="{{ s2invalid }}" dc-props="{{ grow }}" hint-size="auto,46px">Continue</x-import>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- step 3 -->
+              <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <h3 style="font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--espresso);margin:0">Review and confirm</h3>
+                  <div style="display:flex;flex-direction:column">
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">Occasion</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ occasionLabel }}</span></div>
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">Date</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ dateLabel }}</span></div>
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">City</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ cityLabel }}</span></div>
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">Name</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ name }}</span></div>
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">Email</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ email }}</span></div>
+                    <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--stone);border-bottom:1px solid var(--stone)"><span style="font-size:12px;letter-spacing:.04em;color:var(--taupe)">Phone</span><span style="font-size:14px;color:var(--espresso);text-align:right">{{ phoneLabel }}</span></div>
+                  </div>
+                  <div style="padding:4px 0 2px">
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Checkbox" label="Please hold this date provisionally" checked="{{ hold }}" onChange="{{ onHold }}" hint-size="auto,22px"></x-import>
+                  </div>
+                  <div style="display:flex;gap:12px;margin-top:4px">
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="ghost" onClick="{{ back }}" hint-size="auto,46px">Back</x-import>
+                    <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="primary" onClick="{{ confirm }}" dc-props="{{ grow }}" hint-size="auto,46px">Confirm enquiry</x-import>
+                  </div>
+                </div>
+              </sc-if>
+            </sc-if>
+
+            <!-- confirmation -->
+            <sc-if value="{{ booked }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:18px;text-align:center;padding:8px 0">
+                <div style="font-family:var(--font-display);font-size:30px;color:var(--bronze);letter-spacing:.32em;padding-left:.32em">A</div>
+                <h3 style="font-family:var(--font-display);font-weight:300;font-size:27px;line-height:1.2;color:var(--espresso);margin:0">Thank you, {{ name }}.</h3>
+                <p style="font-size:14.5px;line-height:1.7;color:var(--espresso);margin:0 auto;max-width:32ch">Your enquiry is with us. We see only a small number of brides each season, so Mansi will read it personally and write back within two days.</p>
+                <div style="height:1px;background:var(--stone);margin:6px 0"></div>
+                <div style="display:flex;flex-direction:column;gap:12px;text-align:left">
+                  <div style="display:flex;gap:12px;font-size:13.5px;line-height:1.5;color:var(--espresso)"><span style="font-family:var(--font-display);color:var(--bronze)">1</span><span>A personal note to arrange a quiet consultation.</span></div>
+                  <div style="display:flex;gap:12px;font-size:13.5px;line-height:1.5;color:var(--espresso)"><span style="font-family:var(--font-display);color:var(--bronze)">2</span><span>A trial, so the mirror moment is never a surprise.</span></div>
+                  <div style="display:flex;gap:12px;font-size:13.5px;line-height:1.5;color:var(--espresso)"><span style="font-family:var(--font-display);color:var(--bronze)">3</span><span>Your date, calmly held.</span></div>
+                </div>
+                <div style="margin-top:8px">
+                  <x-import component-from-global-scope="AurelleDesignSystem_2fb4d3.Button" variant="secondary" onClick="{{ goHome }}" dc-props="{{ wide }}" hint-size="100%,46px">Return home</x-import>
+                </div>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+
+        <!-- contact details -->
+        <div style="padding:42px 26px 56px;background:var(--ivory)">
+          <div style="height:1px;background:var(--stone);margin:0 0 26px"></div>
+          <div style="display:flex;flex-direction:column;gap:22px">
+            <div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Studio</div><div style="font-size:15px;color:var(--espresso);line-height:1.6">By appointment · Delhi NCR</div></div>
+            <div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Email</div><a href="mailto:studio@aurelle.in" style="font-size:15px;color:var(--espresso);line-height:1.6;text-decoration:none" style-hover="color:var(--bronze)">studio@aurelle.in</a></div>
+            <div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Telephone</div><a href="tel:+919810000000" style="font-size:15px;color:var(--espresso);line-height:1.6;text-decoration:none" style-hover="color:var(--bronze)">+91 98100 00000</a></div>
+            <div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Instagram</div><a href="https://instagram.com/aurelle" target="_blank" rel="noopener" style="font-size:15px;color:var(--espresso);line-height:1.6;text-decoration:none" style-hover="color:var(--bronze)">@aurelle</a></div>
+            <div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px">Hours</div><div style="font-size:15px;color:var(--espresso);line-height:1.6">Tuesday to Sunday · 10 to 7</div></div>
+          </div>
+          <p style="font-size:13.5px;line-height:1.7;color:var(--taupe);margin:28px 0 0;max-width:38ch">We keep our season small on purpose. Every enquiry is read by hand, never by a queue.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- journey progress rail -->
+    <div class="rail"><div class="rail-fill" data-rail-fill=""></div></div>
+
+    <!-- install prompt -->
+    <sc-if value="{{ canInstall }}" hint-placeholder-val="{{ false }}">
+      <div class="install">
+        <div style="flex:1">
+          <div style="font-family:var(--font-display);font-weight:400;font-size:16px;line-height:1.2;color:var(--ivory)">Add Aurelle to your home screen</div>
+          <div style="font-family:var(--font-body);font-size:11px;color:rgba(244,239,230,.62);margin-top:3px">A quiet, full-screen experience — even offline.</div>
+        </div>
+        <button onClick="{{ doInstall }}" style="flex:none;background:var(--champagne);color:var(--espresso);border:none;border-radius:2px;padding:9px 14px;font-family:var(--font-body);font-size:12px;letter-spacing:.04em;cursor:pointer">Install</button>
+        <button onClick="{{ dismissInstall }}" aria-label="Dismiss" style="flex:none;background:none;border:none;color:rgba(244,239,230,.6);font-size:18px;line-height:1;cursor:pointer;padding:0 2px">×</button>
+      </div>
+    </sc-if>
+
+    <!-- ============================== TAB BAR ============================== -->
+    <nav style="flex:none;display:flex;background:var(--bone);border-top:1px solid var(--stone);padding:9px 6px calc(9px + env(safe-area-inset-bottom))">
+      <button class="nav-btn nav-home" onClick="{{ goHome }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;font-family:var(--font-body)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 5l8 6"></path><path d="M6 10v9h12v-9"></path></svg>
+        <sc-if value="{{ navLabels }}" hint-placeholder-val="{{ true }}"><span style="font-size:9.5px;letter-spacing:.06em;color:inherit">Home</span></sc-if>
+      </button>
+      <button class="nav-btn nav-bridal" onClick="{{ goBridal }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;font-family:var(--font-body)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20v-8a6 6 0 0 1 12 0v8"></path><path d="M5 20h14"></path></svg>
+        <sc-if value="{{ navLabels }}" hint-placeholder-val="{{ true }}"><span style="font-size:9.5px;letter-spacing:.06em;color:inherit">Bridal</span></sc-if>
+      </button>
+      <button class="nav-btn nav-portfolio" onClick="{{ goPortfolio }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;font-family:var(--font-body)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1"></rect><circle cx="9" cy="10" r="1.4"></circle><path d="M5 17l4-4 3 3 3-3 4 4"></path></svg>
+        <sc-if value="{{ navLabels }}" hint-placeholder-val="{{ true }}"><span style="font-size:9.5px;letter-spacing:.06em;color:inherit">Portfolio</span></sc-if>
+      </button>
+      <button class="nav-btn nav-studio" onClick="{{ goStudio }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;font-family:var(--font-body)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.2"></circle><path d="M5.5 19a6.5 6.5 0 0 1 13 0"></path></svg>
+        <sc-if value="{{ navLabels }}" hint-placeholder-val="{{ true }}"><span style="font-size:9.5px;letter-spacing:.06em;color:inherit">Studio</span></sc-if>
+      </button>
+      <button class="nav-btn nav-contact" onClick="{{ goContact }}" style="flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;font-family:var(--font-body)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="1"></rect><path d="M4.5 7.5 12 13l7.5-5.5"></path></svg>
+        <sc-if value="{{ navLabels }}" hint-placeholder-val="{{ true }}"><span style="font-size:9.5px;letter-spacing:.06em;color:inherit">Contact</span></sc-if>
+      </button>
+    </nav>
+
+    <!-- ============================== LIGHTBOX ============================== -->
+    <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeLB }}" style="position:absolute;inset:0;z-index:50;background:#141210;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:lbIn .3s var(--ease)">
+        <img src="{{ lbSrc }}" alt="" style="max-width:100%;max-height:82%;object-fit:contain">
+        <div style="font-size:12px;letter-spacing:.08em;color:var(--champagne);margin-top:18px">{{ lbCap }}</div>
+        <div style="font-size:11px;letter-spacing:.1em;color:var(--mushroom);margin-top:24px">Tap anywhere to close</div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:880},&quot;defaultTab&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;home&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;bridal&quot;,&quot;portfolio&quot;,&quot;studio&quot;,&quot;contact&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Navigation&quot;},&quot;navLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Navigation&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tab: (props && props.defaultTab) || 'home',
+      filter: 'All',
+      lightbox: null,
+      step: 1,
+      booked: false,
+      occasionsSel: [], date: '', city: '',
+      name: '', email: '', phone: '', feeling: '', hold: false,
+      canInstall: false,
+    };
+    this.scrollRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const sc = this.scrollRef.current;
+    if ('IntersectionObserver' in window) {
+      this._io = new IntersectionObserver((ents) => {
+        ents.forEach((en) => {
+          if (en.isIntersecting) { en.target.classList.add('in'); this._io.unobserve(en.target); }
+        });
+      }, { root: sc || null, threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+    }
+    this._resize = this._resize.bind(this);
+    this._resize();
+    this._wire();
+    window.addEventListener('resize', this._resize);
+    if (sc) {
+      this._onScroll = this._scroll.bind(this);
+      sc.addEventListener('scroll', this._onScroll, { passive: true });
+      requestAnimationFrame(() => this._scroll());
+    }
+    this._onBIP = (e) => { e.preventDefault(); this._bip = e; this.setState({ canInstall: true }); };
+    window.addEventListener('beforeinstallprompt', this._onBIP);
+    this._registerSW();
+  }
+
+  componentDidUpdate() { this._wire(); this._resize(); }
+
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    const sc = this.scrollRef.current;
+    if (sc && this._onScroll) sc.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._resize);
+    window.removeEventListener('beforeinstallprompt', this._onBIP);
+  }
+
+  _wire() {
+    const sc = this.scrollRef.current; if (!sc) return;
+    const nodes = sc.querySelectorAll('.reveal:not(.in), .reveal-img:not(.in)');
+    if (!this._io) { nodes.forEach((el) => el.classList.add('in')); return; }
+    nodes.forEach((el) => this._io.observe(el));
+  }
+
+  _resize() {
+    const sc = this.scrollRef.current; if (!sc) return;
+    const h = sc.clientHeight;
+    sc.querySelectorAll('.vfill').forEach((el) => { el.style.height = h + 'px'; });
+  }
+
+  _scroll() {
+    if (this._raf) return;
+    this._raf = requestAnimationFrame(() => {
+      this._raf = null;
+      const sc = this.scrollRef.current; if (!sc) return;
+      const vh = sc.clientHeight, top = sc.scrollTop;
+      const scTop = sc.getBoundingClientRect().top;
+      sc.querySelectorAll('[data-px]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const center = (r.top - scTop) + r.height / 2 - vh / 2;
+        const sp = parseFloat(el.getAttribute('data-px')) || 0.1;
+        el.style.transform = 'translate3d(0,' + (center * -sp).toFixed(1) + 'px,0)';
+      });
+      const hero = sc.querySelector('[data-hero]');
+      if (hero) { const k = Math.min(1, top / (vh * 0.9)); hero.style.opacity = (1 - 0.5 * k).toFixed(3); }
+      const fill = sc.querySelector('[data-rail-fill]');
+      if (fill) { const max = sc.scrollHeight - vh; const p = max > 0 ? Math.min(1, Math.max(0, top / max)) : 0; fill.style.transform = 'scaleY(' + p.toFixed(3) + ')'; }
+    });
+  }
+
+  _registerSW() {
+    try {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+      }
+    } catch (e) {}
+  }
+
+  doInstall = async () => {
+    const e = this._bip; if (!e) { this.setState({ canInstall: false }); return; }
+    e.prompt();
+    try { await e.userChoice; } catch (_) {}
+    this._bip = null;
+    this.setState({ canInstall: false });
+  };
+  dismissInstall = () => this.setState({ canInstall: false });
+
+  resetScroll = () => {
+    requestAnimationFrame(() => {
+      if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0;
+    });
+  };
+
+  go = (tab) => (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.setState({ tab });
+    this.resetScroll();
+  };
+
+  goBook = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.setState({ tab: 'contact', step: 1, booked: false });
+    this.resetScroll();
+  };
+
+  toggleOccasion = (label) => () => this.setState((s) => {
+    const has = s.occasionsSel.indexOf(label) !== -1;
+    return { occasionsSel: has ? s.occasionsSel.filter((x) => x !== label) : s.occasionsSel.concat(label) };
+  });
+
+  setFilter = (f) => () => this.setState({ filter: f });
+  openLB = (src, cap) => () => this.setState({ lightbox: { src, cap } });
+  closeLB = () => this.setState({ lightbox: null });
+
+  field = (k) => (e) => {
+    const t = e && e.target ? e.target : null;
+    const v = t ? (t.type === 'checkbox' ? t.checked : t.value) : e;
+    this.setState({ [k]: v });
+  };
+
+  next = () => { this.setState((s) => ({ step: Math.min(3, s.step + 1) })); this.resetScroll(); };
+  back = () => { this.setState((s) => ({ step: Math.max(1, s.step - 1) })); this.resetScroll(); };
+  confirm = () => { this.setState({ booked: true }); this.resetScroll(); };
+
+  renderVals() {
+    const s = this.state;
+    const photo = (n) => 'assets/photo/bride-' + n + '.jpg';
+
+    const experiences = [
+      { cat: 'Bridal', name: 'The Signature Bridal Journey', note: 'From engagement to reception', body: 'One relationship, carried calmly across every ceremony — so the day itself already feels familiar.', img: photo('04'), includes: ['Pre-wedding consultation and trial', 'Bridal makeup across up to three ceremonies', 'On-day presence and quiet touch-ups', 'A considered look for one close family member'] },
+      { cat: 'Bridal', name: 'The Half-day Bridal', note: 'A single ceremony, fully held', body: 'For an intimate nikah, a court morning, or one ceremony you want to be entirely present for.', img: photo('03'), includes: ['Consultation and look planning', 'Bridal makeup for one ceremony', 'Two hours of on-site presence'] },
+      { cat: 'Occasion', name: 'The Reception Evening', note: 'For the evening that is yours', body: 'A softer, lamplit register — composed to read beautifully under evening light.', img: photo('05'), includes: ['Evening look consultation', 'Reception makeup and setting', 'A discreet touch-up kit to carry'] },
+      { cat: 'Occasion', name: 'The Family Mehndi and Sangeet', note: 'For the people around you', body: 'Considered occasion beauty for mothers, sisters and close family across the celebration days.', img: 'assets/photo/mehndi-02.jpg', includes: ['Group consultation', 'Occasion makeup for up to four', 'Coordinated timing across the morning'] },
+    ];
+
+    const strip2 = experiences.slice(0, 2).map((e) => ({ name: e.name, note: e.note, img: e.img, open: this.go('bridal') }));
+
+    const testimonials = [
+      { quote: 'I did not feel made up. I felt like myself, on the calmest morning of my life.', who: 'Aditi', ctx: 'Bridal, Delhi' },
+      { quote: 'Mansi understood the day before I could explain it. Everything was already thought through.', who: 'Ritika', ctx: 'Reception, Gurugram' },
+      { quote: 'My mother said she recognised me. That was the whole point.', who: 'Sneha', ctx: 'Bridal, Noida' },
+    ];
+
+    const P = 'assets/photo/';
+    const allShots = [
+      { src: P + 'bride-02.jpg', cat: 'Bridal', cap: 'Red and emerald' },
+      { src: P + 'occasion-blue-01.jpg', cat: 'Engagement', cap: 'Cowrie shells, soft light' },
+      { src: P + 'mehndi-02.jpg', cat: 'Mehndi', cap: 'Henna, observed' },
+      { src: P + 'bride-04.jpg', cat: 'Bridal', cap: 'Kundan, eyes lowered' },
+      { src: P + 'haldi-01.jpg', cat: 'Haldi', cap: 'Before the day' },
+      { src: P + 'bride-01.jpg', cat: 'Bridal', cap: 'The standing portrait' },
+      { src: P + 'mehndi-01.jpg', cat: 'Mehndi', cap: 'A quiet moment in colour' },
+      { src: P + 'occasion-blue-03.jpg', cat: 'Engagement', cap: 'Composed in the light' },
+      { src: P + 'bride-05.jpg', cat: 'Reception', cap: 'A held smile' },
+      { src: P + 'mehndi-05.jpg', cat: 'Mehndi', cap: 'Floral jewellery' },
+      { src: P + 'bride-08.jpg', cat: 'Bridal', cap: 'Beneath the veil' },
+      { src: P + 'occasion-blue-04.jpg', cat: 'Engagement', cap: 'Sunlit, eyes closed' },
+      { src: P + 'bride-03.jpg', cat: 'Bridal', cap: 'Quiet, composed' },
+      { src: P + 'mehndi-07.jpg', cat: 'Mehndi', cap: 'The mehndi morning' },
+      { src: P + 'bride-06.jpg', cat: 'Reception', cap: 'Lamplight' },
+      { src: P + 'occasion-blue-02.jpg', cat: 'Engagement', cap: 'A held smile, daylight' },
+      { src: P + 'bride-11.jpg', cat: 'Bridal', cap: 'Profile' },
+      { src: P + 'mehndi-06.jpg', cat: 'Mehndi', cap: 'Green florals' },
+    ];
+    const portfolio = allShots
+      .filter((x) => s.filter === 'All' || x.cat === s.filter)
+      .map((x) => {
+        const cap = x.cat + ' · ' + x.cap;
+        return { src: x.src, cap, cat: x.cat, open: this.openLB(x.src, cap) };
+      });
+
+    const filters = ['All', 'Bridal', 'Engagement', 'Mehndi', 'Haldi', 'Reception'].map((f) => ({
+      label: f,
+      onClick: this.setFilter(f),
+      style: f === s.filter
+        ? { flex: 'none', fontFamily: 'var(--font-body)', fontSize: '13px', letterSpacing: '.02em', padding: '8px 16px', borderRadius: '2px', border: '1px solid var(--espresso)', background: 'var(--espresso)', color: 'var(--ivory)', cursor: 'pointer', transition: 'all .2s var(--ease)' }
+        : { flex: 'none', fontFamily: 'var(--font-body)', fontSize: '13px', letterSpacing: '.02em', padding: '8px 16px', borderRadius: '2px', border: '1px solid var(--stone)', background: 'transparent', color: 'var(--taupe)', cursor: 'pointer', transition: 'all .2s var(--ease)' },
+    }));
+
+    const strip = ['bride-02.jpg', 'occasion-blue-01.jpg', 'mehndi-02.jpg', 'bride-04.jpg', 'haldi-01.jpg', 'bride-05.jpg'].map((f) => ({ src: P + f, open: this.openLB(P + f, 'Portfolio') }));
+
+    const occasionTypes = [
+      { name: 'Mehndi', note: 'Colour, henna, the morning', img: P + 'mehndi-03.jpg', open: this.go('portfolio') },
+      { name: 'Haldi', note: 'Soft, golden, intimate', img: P + 'haldi-01.jpg', open: this.go('portfolio') },
+      { name: 'Engagement', note: 'The first occasion', img: P + 'occasion-blue-01.jpg', open: this.go('portfolio') },
+      { name: 'Reception', note: 'The evening that is yours', img: P + 'bride-05.jpg', open: this.go('portfolio') },
+    ];
+
+    const faqs = [
+      { q: 'How far ahead should we begin?', a: 'Most brides write to us three to six months before the date. We take a small number each season, so earlier is calmer.' },
+      { q: 'Do you travel for the wedding?', a: 'Yes — across Delhi NCR and beyond for destination celebrations, arranged quietly during your consultation.' },
+      { q: 'Will there be a trial?', a: 'Always. The mirror moment should never be a surprise, so we plan and trial your look before the day.' },
+    ];
+
+    const principles = [
+      { num: '01', name: 'Less, but better' },
+      { num: '02', name: 'Precision' },
+      { num: '03', name: 'Material honesty' },
+      { num: '04', name: 'Calmness' },
+      { num: '05', name: 'Consistency' },
+    ];
+
+    const occasionList = ['Wedding day', 'Reception', 'Engagement', 'Mehndi', 'Haldi', 'Sangeet', 'Editorial or portrait'];
+    const occasionChoices = occasionList.map((label) => ({ label, checked: s.occasionsSel.indexOf(label) !== -1, toggle: this.toggleOccasion(label) }));
+    const cities = ['Delhi', 'New Delhi', 'Gurugram', 'Noida', 'Greater Noida', 'Ghaziabad', 'Faridabad', 'Dwarka', 'Other (Delhi NCR)'];
+
+    return {
+      tab: s.tab,
+      goHome: this.go('home'),
+      goBridal: this.go('bridal'),
+      goPortfolio: this.go('portfolio'),
+      goStudio: this.go('studio'),
+      goContact: this.go('contact'),
+      goBook: this.goBook,
+      scrollRef: this.scrollRef,
+
+      navLabels: this.props.navLabels !== undefined ? this.props.navLabels : true,
+      canInstall: s.canInstall,
+      doInstall: this.doInstall,
+      dismissInstall: this.dismissInstall,
+
+      experiences, strip2, testimonials, portfolio, filters, strip, principles, occasionChoices, cities, occasionTypes, faqs,
+
+      lbOpen: !!s.lightbox,
+      lbSrc: s.lightbox ? s.lightbox.src : '',
+      lbCap: s.lightbox ? s.lightbox.cap : '',
+      closeLB: this.closeLB,
+
+      step: String(s.step),
+      notBooked: !s.booked,
+      booked: s.booked,
+      isStep1: !s.booked && s.step === 1,
+      isStep2: !s.booked && s.step === 2,
+      isStep3: !s.booked && s.step === 3,
+
+      date: s.date, city: s.city,
+      name: s.name, email: s.email, phone: s.phone, feeling: s.feeling, hold: s.hold,
+      onDate: this.field('date'),
+      onCity: this.field('city'),
+      onName: this.field('name'),
+      onEmail: this.field('email'),
+      onPhone: this.field('phone'),
+      onFeeling: this.field('feeling'),
+      onHold: this.field('hold'),
+      next: this.next, back: this.back, confirm: this.confirm,
+      s1invalid: !(s.occasionsSel.length && s.city),
+      s2invalid: !(s.name && s.email && s.phone),
+      occasionLabel: s.occasionsSel.length ? s.occasionsSel.join(', ') : '—',
+      dateLabel: s.date || 'To be decided',
+      cityLabel: s.city || 'To be confirmed',
+      phoneLabel: s.phone || '—',
+
+      yes: true,
+      no: false,
+      wide: { style: { width: '100%' } },
+      grow: { style: { flex: '1' } },
+      heroBtn: { style: { width: '100%', background: 'var(--bone)', color: 'var(--espresso)', border: '1px solid var(--bone)' } },
+    };
+  }
+}
+</script>
+</body>
+</html>
